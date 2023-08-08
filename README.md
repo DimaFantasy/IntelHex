@@ -1,3 +1,26 @@
+# My Repository: Projects and Code for Delphi
+
+Welcome to my repository dedicated to development using the Delphi programming language.
+
+## Description
+
+Here, you'll find a wide range of projects, code examples, and resources related to Delphi programming. If you're interested in creating applications for Windows, developing graphical interfaces, and using object-oriented programming, this repository provides valuable materials and instructions.
+
+## What You'll Find Here
+
+- **Code Examples:** In the "Examples" section, you'll discover a variety of concise and illustrative code examples in Delphi. From basic constructs to more complex applications, we cover a broad range of topics.
+
+- **Projects:** This repository includes diverse projects, ranging from small utilities to full-fledged applications. Projects will help you understand how to apply knowledge in practice.
+
+- **Resources and Links:** In the "Resources" section, we've gathered useful materials for Delphi developers. This includes recommended books, online courses, and articles.
+
+## How to Use This Repository
+
+1. Explore the "Code Examples" section for a quick understanding of Delphi's syntax and core concepts.
+2. Dive into our "Projects" to see how complex tasks are implemented and how the structure of larger applications is built.
+3. In the "Resources" section, you'll find links to important materials that will help
+---------------------------------------------------------
+
 # Мой Репозиторий: Проекты и Код для Delphi
 
 Добро пожаловать в мой репозиторий, посвященный разработке на языке программирования Delphi.
