@@ -20,8 +20,10 @@ Here, you'll find a wide range of projects, code examples, and resources related
 2. Dive into our "Projects" to see how complex tasks are implemented and how the structure of larger applications is built.
 3. In the "Resources" section, you'll find links to important materials that will help
 
-**Note: All materials in this repository are provided under the WTFPL license, which allows you to do practically anything with them. However, remember to be good and respect the work of other developers!**
----------------------------------------------------------
+
+__Note: All materials in this repository are provided under both the WTFPL (Do What The Fuck You Want To Public License) and DBAD (Don’t Be a D*ck Public License) licenses, which allow you to do practically anything with them. However, remember to be good and respect the work of other developers!__
+
+--------------------------------------------------------
 
 # Мой Репозиторий: Проекты и Код для Delphi
 
@@ -45,4 +47,4 @@ Here, you'll find a wide range of projects, code examples, and resources related
 2. Исследуйте наши "Проекты", чтобы увидеть, как реализуются сложные задачи и как строится структура больших приложений.
 3. В разделе "Ресурсы" вы найдете ссылки на важные материалы, которые помогут вам глубже понять Delphi и его возможности.
 
-**Примечание: Все материалы в этом репозитории предоставляются на основе лицензии WTFPL, которая позволяет делать с ними практически все, что вы хотите. Но помните, быть хорошими и уважать труд других разработчиков!**
+__Примечание: Все материалы в этом репозитории предоставляются под лицензией WTFPL (Do What The Fuck You Want To Public License) и DBAD (Don’t Be a D*ck Public License), которые позволяют вам практически все с ними делать. Однако помните быть доброжелательными и уважать труд других разработчиков!__
