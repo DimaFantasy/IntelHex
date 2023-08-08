@@ -15,9 +15,6 @@ The Bin2Hex function takes binary data from a memory stream (BinStream) and, rep
 
 These functions are particularly useful when working with Intel HEX files, a common format for representing binary data in a human-readable text format. You can utilize these functions to perform various tasks, such as converting data between formats, extracting data sections, and managing different record types commonly found in Intel HEX files.
 
-Resources
-In the "Resources" section, you'll find links to important materials that will help deepen your understanding of Delphi and its capabilities.
-
 Note: All materials in this repository are provided under both the WTFPL (Do What The Fuck You Want To Public License) and DBAD (Don’t Be a D*ck Public License) licenses, which allow you to do practically anything with them. However, remember to be good and respect the work of other developers!
 
 --------------------------------------------------------------
@@ -38,8 +35,5 @@ __Bin2Hex__
 Функция Bin2Hex берет двоичные данные из потока памяти (BinStream) и преобразует их в шестнадцатеричный формат, сохраняя результаты в список строк (HexStringList). Параметр StartAddress указывает начальный адрес данных.
 
 Эти функции особенно полезны при работе с файлами Intel HEX, распространенным форматом для представления двоичных данных в удобном для чтения текстовом формате. Вы можете использовать эти функции для выполнения различных задач, таких как преобразование данных между форматами, извлечение секций данных и управление различными типами записей, часто встречающимися в файлах Intel HEX.
-
-Ресурсы
-В разделе "Ресурсы" вы найдете ссылки на важные материалы, которые помогут вам глубже понять Delphi и его возможности.
 
 Примечание: Все материалы в этом репозитории предоставляются под лицензиями WTFPL (Do What The Fuck You Want To Public License) и DBAD (Don’t Be a D*ck Public License), которые позволяют вам практически все с ними делать. Однако помните быть доброжелательными и уважать труд других разработчиков!
