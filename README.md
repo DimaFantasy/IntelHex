@@ -1,50 +1,45 @@
-# My Repository: Projects and Code for Delphi
-
+My Repository: Projects and Code for Delphi
 Welcome to my repository dedicated to development using the Delphi programming language.
 
-## Description
+__Unit uIntelHex.pas__
+The uIntelHex unit provides essential functionality for working with Intel HEX files in the Delphi programming language. Below are detailed descriptions of the functions included in this unit:
 
-Here, you'll find a wide range of projects, code examples, and resources related to Delphi programming. If you're interested in creating applications for Windows, developing graphical interfaces, and using object-oriented programming, this repository provides valuable materials and instructions.
+__Txt2Bin__
+This function converts a list of strings (TxtStringList), containing textual information, into binary data and writes it to a memory stream (BinStream). The StartAddress parameter indicates the starting address that will be used during the conversion.
 
-## What You'll Find Here
+__Hex2Bin__
+The Hex2Bin function converts a list of strings (HexStringList) containing hexadecimal data into binary data and writes it to a memory stream (BinStream). The StartAddress parameter specifies the starting address to be used during the conversion.
 
-- **Code Examples:** In the "Examples" section, you'll discover a variety of concise and illustrative code examples in Delphi. From basic constructs to more complex applications, we cover a broad range of topics.
+__Bin2Hex__
+The Bin2Hex function takes binary data from a memory stream (BinStream) and, representing it as a memory stream, converts it into a hexadecimal format, saving the results in a list of strings (HexStringList). The StartAddress parameter indicates the starting address of the data.
 
-- **Projects:** This repository includes diverse projects, ranging from small utilities to full-fledged applications. Projects will help you understand how to apply knowledge in practice.
+These functions are particularly useful when working with Intel HEX files, a common format for representing binary data in a human-readable text format. You can utilize these functions to perform various tasks, such as converting data between formats, extracting data sections, and managing different record types commonly found in Intel HEX files.
 
-- **Resources and Links:** In the "Resources" section, we've gathered useful materials for Delphi developers. This includes recommended books, online courses, and articles.
+Resources
+In the "Resources" section, you'll find links to important materials that will help deepen your understanding of Delphi and its capabilities.
 
-## How to Use This Repository
+Note: All materials in this repository are provided under both the WTFPL (Do What The Fuck You Want To Public License) and DBAD (Don’t Be a D*ck Public License) licenses, which allow you to do practically anything with them. However, remember to be good and respect the work of other developers!
 
-1. Explore the "Code Examples" section for a quick understanding of Delphi's syntax and core concepts.
-2. Dive into our "Projects" to see how complex tasks are implemented and how the structure of larger applications is built.
-3. In the "Resources" section, you'll find links to important materials that will help
+--------------------------------------------------------------
 
-
-__Note: All materials in this repository are provided under both the WTFPL (Do What The Fuck You Want To Public License) and DBAD (Don’t Be a D*ck Public License) licenses, which allow you to do practically anything with them. However, remember to be good and respect the work of other developers!__
-
---------------------------------------------------------
-
-# Мой Репозиторий: Проекты и Код для Delphi
-
+Мой Репозиторий: Проекты и Код для Delphi
 Добро пожаловать в мой репозиторий, посвященный разработке на языке программирования Delphi.
 
-## Описание
+__Unit uIntelHex.pas__
+Модуль uIntelHex предоставляет необходимую функциональность для работы с файлами формата Intel HEX в языке программирования Delphi. Ниже представлены подробные описания функций, включенных в этот модуль:
 
-Здесь вы найдете широкий спектр проектов, примеров кода и ресурсов, связанных с Delphi. Если вы интересуетесь созданием приложений для Windows, разработкой графических интерфейсов и применением объектно-ориентированного программирования, то этот репозиторий предоставит вам полезные материалы и инструкции.
+__Txt2Bin__
+Эта функция преобразует список строк (TxtStringList), содержащий текстовую информацию, в двоичные данные и записывает их в поток памяти (BinStream). Параметр StartAddress указывает стартовый адрес, который будет использоваться при преобразовании.
 
-## Что вы найдете здесь
+__Hex2Bin__
+Функция Hex2Bin преобразует список строк (HexStringList), содержащий шестнадцатеричные данные, в двоичные данные и записывает их в поток памяти (BinStream). Параметр StartAddress определяет стартовый адрес, который будет использоваться в процессе преобразования.
 
-- **Примеры Кода:** В разделе "Примеры" вы обнаружите множество кратких и наглядных примеров кода на Delphi. От базовых конструкций до более сложных приложений — мы покрываем широкий диапазон тем.
+__Bin2Hex__
+Функция Bin2Hex берет двоичные данные из потока памяти (BinStream) и преобразует их в шестнадцатеричный формат, сохраняя результаты в список строк (HexStringList). Параметр StartAddress указывает начальный адрес данных.
 
-- **Проекты:** Этот репозиторий включает разнообразные проекты, начиная от небольших утилит и заканчивая полноценными приложениями. Проекты позволят вам изучить, как применить знания на практике.
+Эти функции особенно полезны при работе с файлами Intel HEX, распространенным форматом для представления двоичных данных в удобном для чтения текстовом формате. Вы можете использовать эти функции для выполнения различных задач, таких как преобразование данных между форматами, извлечение секций данных и управление различными типами записей, часто встречающимися в файлах Intel HEX.
 
-- **Ресурсы и Ссылки:** В разделе "Ресурсы" мы собрали полезные материалы для разработчиков Delphi. Это включает в себя рекомендуемые книги, онлайн-курсы и статьи.
+Ресурсы
+В разделе "Ресурсы" вы найдете ссылки на важные материалы, которые помогут вам глубже понять Delphi и его возможности.
 
-## Как использовать этот репозиторий
-
-1. Ознакомьтесь с разделом "Примеры Кода" для быстрого понимания синтаксиса и основных концепций Delphi.
-2. Исследуйте наши "Проекты", чтобы увидеть, как реализуются сложные задачи и как строится структура больших приложений.
-3. В разделе "Ресурсы" вы найдете ссылки на важные материалы, которые помогут вам глубже понять Delphi и его возможности.
-
-__Примечание: Все материалы в этом репозитории предоставляются под лицензией WTFPL (Do What The Fuck You Want To Public License) и DBAD (Don’t Be a D*ck Public License), которые позволяют вам практически все с ними делать. Однако помните быть доброжелательными и уважать труд других разработчиков!__
+Примечание: Все материалы в этом репозитории предоставляются под лицензиями WTFPL (Do What The Fuck You Want To Public License) и DBAD (Don’t Be a D*ck Public License), которые позволяют вам практически все с ними делать. Однако помните быть доброжелательными и уважать труд других разработчиков!
