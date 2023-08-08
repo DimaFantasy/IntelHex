@@ -6,46 +6,46 @@ uses
   SysUtils, Classes, Windows;
 
 const
-  HEX_ERROR_MARKER = 1; // Ошибка: неверный маркер записи
-  HEX_ERROR_ADDRESS = 2; // Ошибка: неверный адрес записи
-  HEX_ERROR_REC_TYPE = 3; // Ошибка: неверный тип записи
-  HEX_ERROR_SECTION_SIZE = 4; // Ошибка: неверный размер секции
-  HEX_ERROR_DATA = 5; // Ошибка: некорректные данные записи
-  HEX_ERROR_CHECK_SUM = 6; // Ошибка: неверная контрольная сумма записи
-  HEX_ERROR_SECTION_COUNT = 7; // Ошибка: превышено максимальное количество секций
+  HEX_ERROR_MARKER = 1; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅС‹Р№ РјР°СЂРєРµСЂ Р·Р°РїРёСЃРё
+  HEX_ERROR_ADDRESS = 2; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅС‹Р№ Р°РґСЂРµСЃ Р·Р°РїРёСЃРё
+  HEX_ERROR_REC_TYPE = 3; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅС‹Р№ С‚РёРї Р·Р°РїРёСЃРё
+  HEX_ERROR_SECTION_SIZE = 4; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅС‹Р№ СЂР°Р·РјРµСЂ СЃРµРєС†РёРё
+  HEX_ERROR_DATA = 5; // РћС€РёР±РєР°: РЅРµРєРѕСЂСЂРµРєС‚РЅС‹Рµ РґР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё
+  HEX_ERROR_CHECK_SUM = 6; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅР°СЏ РєРѕРЅС‚СЂРѕР»СЊРЅР°СЏ СЃСѓРјРјР° Р·Р°РїРёСЃРё
+  HEX_ERROR_SECTION_COUNT = 7; // РћС€РёР±РєР°: РїСЂРµРІС‹С€РµРЅРѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРµРєС†РёР№
 
 type
   EHex2Bin = class(Exception)
   private
-    FCode: integer; // Код ошибки
+    FCode: integer; // РљРѕРґ РѕС€РёР±РєРё
   public
-    constructor Create(ACode: integer); // Создает исключение с указанным кодом ошибки
-    property Code: integer read FCode write FCode; // Свойство для чтения и записи кода ошибки
+    constructor Create(ACode: integer); // РЎРѕР·РґР°РµС‚ РёСЃРєР»СЋС‡РµРЅРёРµ СЃ СѓРєР°Р·Р°РЅРЅС‹Рј РєРѕРґРѕРј РѕС€РёР±РєРё
+    property Code: integer read FCode write FCode; // РЎРІРѕР№СЃС‚РІРѕ РґР»СЏ С‡С‚РµРЅРёСЏ Рё Р·Р°РїРёСЃРё РєРѕРґР° РѕС€РёР±РєРё
   end;
 
-//TxtStringList: TStringList - Список строк, содержащих данные в формате X.
-//BinStream: TMemoryStream - Поток, в который будут записаны данные в формате BIN.
-//StartAddress: int64 - Начальный адрес данных. Этот параметр может использоваться в процессе конвертации,
-//  если требуется указать определенный адрес начала данных.
+//TxtStringList: TStringList - РЎРїРёСЃРѕРє СЃС‚СЂРѕРє, СЃРѕРґРµСЂР¶Р°С‰РёС… РґР°РЅРЅС‹Рµ РІ С„РѕСЂРјР°С‚Рµ X.
+//BinStream: TMemoryStream - РџРѕС‚РѕРє, РІ РєРѕС‚РѕСЂС‹Р№ Р±СѓРґСѓС‚ Р·Р°РїРёСЃР°РЅС‹ РґР°РЅРЅС‹Рµ РІ С„РѕСЂРјР°С‚Рµ BIN.
+//StartAddress: int64 - РќР°С‡Р°Р»СЊРЅС‹Р№ Р°РґСЂРµСЃ РґР°РЅРЅС‹С…. Р­С‚РѕС‚ РїР°СЂР°РјРµС‚СЂ РјРѕР¶РµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РІ РїСЂРѕС†РµСЃСЃРµ РєРѕРЅРІРµСЂС‚Р°С†РёРё,
+//  РµСЃР»Рё С‚СЂРµР±СѓРµС‚СЃСЏ СѓРєР°Р·Р°С‚СЊ РѕРїСЂРµРґРµР»РµРЅРЅС‹Р№ Р°РґСЂРµСЃ РЅР°С‡Р°Р»Р° РґР°РЅРЅС‹С….
 type
   TXxx2Bin = procedure( TxtStringList : TStringList; BinStream : TMemoryStream;
     var StartAddress : int64 );
 
-// Преобразует список строк `TxtStringList`, содержащий текстовую информацию, в двоичные данные и записывает их в `BinStream`.
-// Параметр `StartAddress` указывает стартовый адрес, который будет использоваться при преобразовании.
+// РџСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃРїРёСЃРѕРє СЃС‚СЂРѕРє `TxtStringList`, СЃРѕРґРµСЂР¶Р°С‰РёР№ С‚РµРєСЃС‚РѕРІСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ, РІ РґРІРѕРёС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ Рё Р·Р°РїРёСЃС‹РІР°РµС‚ РёС… РІ `BinStream`.
+// РџР°СЂР°РјРµС‚СЂ `StartAddress` СѓРєР°Р·С‹РІР°РµС‚ СЃС‚Р°СЂС‚РѕРІС‹Р№ Р°РґСЂРµСЃ, РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РїСЂРё РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРё.
 procedure Txt2Bin(TxtStringList: TStringList; BinStream: TMemoryStream; var StartAddress: Int64);
 
-// Преобразует список строк `HexStringList`, содержащий шестнадцатеричные данные, в двоичные данные и записывает их в `BinStream`.
-// Параметр `StartAddress` указывает стартовый адрес, который будет использоваться при преобразовании.
+// РџСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃРїРёСЃРѕРє СЃС‚СЂРѕРє `HexStringList`, СЃРѕРґРµСЂР¶Р°С‰РёР№ С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ, РІ РґРІРѕРёС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ Рё Р·Р°РїРёСЃС‹РІР°РµС‚ РёС… РІ `BinStream`.
+// РџР°СЂР°РјРµС‚СЂ `StartAddress` СѓРєР°Р·С‹РІР°РµС‚ СЃС‚Р°СЂС‚РѕРІС‹Р№ Р°РґСЂРµСЃ, РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РїСЂРё РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРё.
 procedure Hex2Bin(HexStringList: TStringList; BinStream: TMemoryStream; var StartAddress: Int64);
 
-// Преобразует двоичные данные из `BinStream`, представленные в виде потока памяти, в шестнадцатеричный формат и сохраняет их в список строк `HexStringList`.
-// Параметр `StartAddress` указывает стартовый адрес данных.
+// РџСЂРµРѕР±СЂР°Р·СѓРµС‚ РґРІРѕРёС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ РёР· `BinStream`, РїСЂРµРґСЃС‚Р°РІР»РµРЅРЅС‹Рµ РІ РІРёРґРµ РїРѕС‚РѕРєР° РїР°РјСЏС‚Рё, РІ С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅС‹Р№ С„РѕСЂРјР°С‚ Рё СЃРѕС…СЂР°РЅСЏРµС‚ РёС… РІ СЃРїРёСЃРѕРє СЃС‚СЂРѕРє `HexStringList`.
+// РџР°СЂР°РјРµС‚СЂ `StartAddress` СѓРєР°Р·С‹РІР°РµС‚ СЃС‚Р°СЂС‚РѕРІС‹Р№ Р°РґСЂРµСЃ РґР°РЅРЅС‹С….
 procedure Bin2Hex(BinStream: TMemoryStream; HexStringList: TStringList; StartAddress: Int64);
 
 {$IFDEF VER150} //Delphi 7
-// Функция CharInSet: Проверяет, принадлежит ли символ C указанному набору символов CharSet.
-// Перегружена для поддержки AnsiChar и WideChar.
+// Р¤СѓРЅРєС†РёСЏ CharInSet: РџСЂРѕРІРµСЂСЏРµС‚, РїСЂРёРЅР°РґР»РµР¶РёС‚ Р»Рё СЃРёРјРІРѕР» C СѓРєР°Р·Р°РЅРЅРѕРјСѓ РЅР°Р±РѕСЂСѓ СЃРёРјРІРѕР»РѕРІ CharSet.
+// РџРµСЂРµРіСЂСѓР¶РµРЅР° РґР»СЏ РїРѕРґРґРµСЂР¶РєРё AnsiChar Рё WideChar.
 function  CharInSet(C : AnsiChar; const CharSet : TSysCharSet) : Boolean; overload;
 function  CharInSet(C : WideChar; const CharSet : TSysCharSet) : Boolean; overload;
 {$ENDIF}
@@ -53,43 +53,43 @@ function  CharInSet(C : WideChar; const CharSet : TSysCharSet) : Boolean; overlo
 implementation
 
 const
-  ONE_RECORD_SIZE = 16; // Размер одной записи в формате Intel .hex файла
-  ONE_SECTION_SIZE = 64 * 1024; // Размер одной секции (блока данных)
-  MAX_SECTION_COUNT = 16; // Максимальное количество секций
-  MAX_BUFFER_SIZE = MAX_SECTION_COUNT * ONE_SECTION_SIZE; // Максимальный размер буфера данных
+  ONE_RECORD_SIZE = 16; // Р Р°Р·РјРµСЂ РѕРґРЅРѕР№ Р·Р°РїРёСЃРё РІ С„РѕСЂРјР°С‚Рµ Intel .hex С„Р°Р№Р»Р°
+  ONE_SECTION_SIZE = 64 * 1024; // Р Р°Р·РјРµСЂ РѕРґРЅРѕР№ СЃРµРєС†РёРё (Р±Р»РѕРєР° РґР°РЅРЅС‹С…)
+  MAX_SECTION_COUNT = 16; // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРµРєС†РёР№
+  MAX_BUFFER_SIZE = MAX_SECTION_COUNT * ONE_SECTION_SIZE; // РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ Р±СѓС„РµСЂР° РґР°РЅРЅС‹С…
 
 type
-  // Возможные типы записей для файлов формата Intel .hex
+  // Р’РѕР·РјРѕР¶РЅС‹Рµ С‚РёРїС‹ Р·Р°РїРёСЃРµР№ РґР»СЏ С„Р°Р№Р»РѕРІ С„РѕСЂРјР°С‚Р° Intel .hex
   TRecType = (
-    rtData = 0, // Данные
-    rtEof = 1, // Конец файла
-    rtEsa = 2, // Расширенный адрес сегмента
-    rtSsa = 3, // Начальный адрес сегмента
-    rtEla = 4, // Расширенный линейный адрес
-    rtSla = 5 // Начальный линейный адрес
+    rtData = 0, // Р”Р°РЅРЅС‹Рµ
+    rtEof = 1, // РљРѕРЅРµС† С„Р°Р№Р»Р°
+    rtEsa = 2, // Р Р°СЃС€РёСЂРµРЅРЅС‹Р№ Р°РґСЂРµСЃ СЃРµРіРјРµРЅС‚Р°
+    rtSsa = 3, // РќР°С‡Р°Р»СЊРЅС‹Р№ Р°РґСЂРµСЃ СЃРµРіРјРµРЅС‚Р°
+    rtEla = 4, // Р Р°СЃС€РёСЂРµРЅРЅС‹Р№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ
+    rtSla = 5 // РќР°С‡Р°Р»СЊРЅС‹Р№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ
   );
 
   THexRec = record
-    Marker: BYTE; // Маркер записи (':') - валидный, другие - невалидный
-    DataSize: BYTE; // Размер данных
-    Addr: Word; // Адрес
-    RecType: TRecType; // Тип записи
-    DataBuf: array [0 .. 255] of BYTE; // Буфер данных
-    CheckSum: BYTE; // Контрольная сумма
+    Marker: BYTE; // РњР°СЂРєРµСЂ Р·Р°РїРёСЃРё (':') - РІР°Р»РёРґРЅС‹Р№, РґСЂСѓРіРёРµ - РЅРµРІР°Р»РёРґРЅС‹Р№
+    DataSize: BYTE; // Р Р°Р·РјРµСЂ РґР°РЅРЅС‹С…
+    Addr: Word; // РђРґСЂРµСЃ
+    RecType: TRecType; // РўРёРї Р·Р°РїРёСЃРё
+    DataBuf: array [0 .. 255] of BYTE; // Р‘СѓС„РµСЂ РґР°РЅРЅС‹С…
+    CheckSum: BYTE; // РљРѕРЅС‚СЂРѕР»СЊРЅР°СЏ СЃСѓРјРјР°
   end;
 
   THexSection = record
-    LinearAddress: DWORD; // Линейный адрес секции
-    UsedOffset: DWORD; // Используемое смещение в секции
-    UnusedOffset: DWORD; // Неиспользуемое смещение в секции
-    DataBuffer: array [0 .. ONE_SECTION_SIZE - 1] of BYTE; // Буфер данных секции
+    LinearAddress: DWORD; // Р›РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ СЃРµРєС†РёРё
+    UsedOffset: DWORD; // РСЃРїРѕР»СЊР·СѓРµРјРѕРµ СЃРјРµС‰РµРЅРёРµ РІ СЃРµРєС†РёРё
+    UnusedOffset: DWORD; // РќРµРёСЃРїРѕР»СЊР·СѓРµРјРѕРµ СЃРјРµС‰РµРЅРёРµ РІ СЃРµРєС†РёРё
+    DataBuffer: array [0 .. ONE_SECTION_SIZE - 1] of BYTE; // Р‘СѓС„РµСЂ РґР°РЅРЅС‹С… СЃРµРєС†РёРё
   end;
 
 var
-  HexSections: array [0 .. MAX_SECTION_COUNT - 1] of THexSection; // Массив секций данных
-  Hex2BinErrorMessage: array [HEX_ERROR_MARKER .. HEX_ERROR_SECTION_COUNT] of string; // Массив сообщений об ошибках
+  HexSections: array [0 .. MAX_SECTION_COUNT - 1] of THexSection; // РњР°СЃСЃРёРІ СЃРµРєС†РёР№ РґР°РЅРЅС‹С…
+  Hex2BinErrorMessage: array [HEX_ERROR_MARKER .. HEX_ERROR_SECTION_COUNT] of string; // РњР°СЃСЃРёРІ СЃРѕРѕР±С‰РµРЅРёР№ РѕР± РѕС€РёР±РєР°С…
 
-{ Конструктор EHex2Bin }
+{ РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ EHex2Bin }
 constructor EHex2Bin.Create( ACode : integer );
 begin
   FCode := ACode;
@@ -97,17 +97,17 @@ begin
 end;
 
 {$IFDEF VER150} //Delphi 7
-// Функция CharInSet(C: AnsiChar; const CharSet: TSysCharSet): Boolean;
-// Проверяет, принадлежит ли символ C указанному множеству CharSet типа TSysCharSet.
-// Возвращает True, если символ присутствует в множестве CharSet, иначе возвращает False.
+// Р¤СѓРЅРєС†РёСЏ CharInSet(C: AnsiChar; const CharSet: TSysCharSet): Boolean;
+// РџСЂРѕРІРµСЂСЏРµС‚, РїСЂРёРЅР°РґР»РµР¶РёС‚ Р»Рё СЃРёРјРІРѕР» C СѓРєР°Р·Р°РЅРЅРѕРјСѓ РјРЅРѕР¶РµСЃС‚РІСѓ CharSet С‚РёРїР° TSysCharSet.
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ True, РµСЃР»Рё СЃРёРјРІРѕР» РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ РІ РјРЅРѕР¶РµСЃС‚РІРµ CharSet, РёРЅР°С‡Рµ РІРѕР·РІСЂР°С‰Р°РµС‚ False.
 function CharInSet(C: AnsiChar; const CharSet: TSysCharSet): Boolean;
 begin
   Result := C in CharSet;
 end;
 
-// Функция CharInSet(C: WideChar; const CharSet: TSysCharSet): Boolean;
-// Проверяет, принадлежит ли символ C указанному множеству CharSet типа TSysCharSet.
-// Возвращает True, если символ присутствует в множестве CharSet, иначе возвращает False.
+// Р¤СѓРЅРєС†РёСЏ CharInSet(C: WideChar; const CharSet: TSysCharSet): Boolean;
+// РџСЂРѕРІРµСЂСЏРµС‚, РїСЂРёРЅР°РґР»РµР¶РёС‚ Р»Рё СЃРёРјРІРѕР» C СѓРєР°Р·Р°РЅРЅРѕРјСѓ РјРЅРѕР¶РµСЃС‚РІСѓ CharSet С‚РёРїР° TSysCharSet.
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ True, РµСЃР»Рё СЃРёРјРІРѕР» РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ РІ РјРЅРѕР¶РµСЃС‚РІРµ CharSet, РёРЅР°С‡Рµ РІРѕР·РІСЂР°С‰Р°РµС‚ False.
 function CharInSet(C: WideChar; const CharSet: TSysCharSet): Boolean;
 begin
   Result := (C < #$0100) and (AnsiChar(C) in CharSet);
@@ -119,227 +119,227 @@ end;
 //
 // The checksum is calculated by summing the values of all hexadecimal digit
 // pairs in the record modulo 256  and taking the two's complement
-// Функция HexCalcCheckSum вычисляет контрольную сумму для записи в шестнадцатеричном формате (структуры THexRec).
-// Возвращает контрольную сумму в виде байта.
+// Р¤СѓРЅРєС†РёСЏ HexCalcCheckSum РІС‹С‡РёСЃР»СЏРµС‚ РєРѕРЅС‚СЂРѕР»СЊРЅСѓСЋ СЃСѓРјРјСѓ РґР»СЏ Р·Р°РїРёСЃРё РІ С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅРѕРј С„РѕСЂРјР°С‚Рµ (СЃС‚СЂСѓРєС‚СѓСЂС‹ THexRec).
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕРЅС‚СЂРѕР»СЊРЅСѓСЋ СЃСѓРјРјСѓ РІ РІРёРґРµ Р±Р°Р№С‚Р°.
 function HexCalcCheckSum(HexRec: THexRec): BYTE;
 var
   i: integer;
 begin
-  // Инициализация результата суммированием размера данных, адреса и типа записи
+  // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ СЂРµР·СѓР»СЊС‚Р°С‚Р° СЃСѓРјРјРёСЂРѕРІР°РЅРёРµРј СЂР°Р·РјРµСЂР° РґР°РЅРЅС‹С…, Р°РґСЂРµСЃР° Рё С‚РёРїР° Р·Р°РїРёСЃРё
   Result := HexRec.DataSize + HexRec.Addr + (HexRec.Addr shr 8) + BYTE(HexRec.RecType);
-  // Суммируем значения всех байтов данных
+  // РЎСѓРјРјРёСЂСѓРµРј Р·РЅР°С‡РµРЅРёСЏ РІСЃРµС… Р±Р°Р№С‚РѕРІ РґР°РЅРЅС‹С…
   for i := 0 to HexRec.DataSize - 1 do
     Inc(Result, HexRec.DataBuf[i]);
-  // Применяем двоичное дополнение (Two's complement) к результату
+  // РџСЂРёРјРµРЅСЏРµРј РґРІРѕРёС‡РЅРѕРµ РґРѕРїРѕР»РЅРµРЅРёРµ (Two's complement) Рє СЂРµР·СѓР»СЊС‚Р°С‚Сѓ
   Result := (not Result) + 1;
 end;
 
-// Функция HexRec2Str преобразует структуру THexRec в строку, соответствующую формату записи в шестнадцатеричном формате.
-// Возвращает строку, представляющую значения из структуры THexRec.
+// Р¤СѓРЅРєС†РёСЏ HexRec2Str РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂСѓРєС‚СѓСЂСѓ THexRec РІ СЃС‚СЂРѕРєСѓ, СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ С„РѕСЂРјР°С‚Сѓ Р·Р°РїРёСЃРё РІ С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅРѕРј С„РѕСЂРјР°С‚Рµ.
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚СЂРѕРєСѓ, РїСЂРµРґСЃС‚Р°РІР»СЏСЋС‰СѓСЋ Р·РЅР°С‡РµРЅРёСЏ РёР· СЃС‚СЂСѓРєС‚СѓСЂС‹ THexRec.
 function HexRec2Str(HexRec: THexRec): string;
 var
   i: integer;
 begin
   Result := ':' + IntToHex(HexRec.DataSize, 2) + IntToHex(HexRec.Addr, 4) +
     IntToHex(Ord(HexRec.RecType), 2);
-  // Преобразуем байты данных в шестнадцатеричное представление и добавляем их к строке
+  // РџСЂРµРѕР±СЂР°Р·СѓРµРј Р±Р°Р№С‚С‹ РґР°РЅРЅС‹С… РІ С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ Рё РґРѕР±Р°РІР»СЏРµРј РёС… Рє СЃС‚СЂРѕРєРµ
   for i := 0 to HexRec.DataSize - 1 do
     Result := Result + IntToHex(HexRec.DataBuf[i], 2);
-  // Вычисляем и добавляем контрольную сумму к строке
+  // Р’С‹С‡РёСЃР»СЏРµРј Рё РґРѕР±Р°РІР»СЏРµРј РєРѕРЅС‚СЂРѕР»СЊРЅСѓСЋ СЃСѓРјРјСѓ Рє СЃС‚СЂРѕРєРµ
   Result := Result + IntToHex( HexRec.DataBuf[ i ], 2 );
-  // Возвращаем сформированную строку
+  // Р’РѕР·РІСЂР°С‰Р°РµРј СЃС„РѕСЂРјРёСЂРѕРІР°РЅРЅСѓСЋ СЃС‚СЂРѕРєСѓ
   Result := Result + IntToHex( HexCalcCheckSum( HexRec ), 2 )
 end;
 
 // 1 23 4567 89 ABCDEF.............................
 // : 10 0013 00 AC12AD13AE10AF1112002F8E0E8F0F22 44
-// Функция HexStr2Rec преобразует строку HexStr в структуру THexRec.
-// Строка HexStr должна соответствовать формату записи в шестнадцатеричном формате, как указано в комментарии.
-// Функция возвращает структуру THexRec, содержащую разобранные значения из строки.
+// Р¤СѓРЅРєС†РёСЏ HexStr2Rec РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ HexStr РІ СЃС‚СЂСѓРєС‚СѓСЂСѓ THexRec.
+// РЎС‚СЂРѕРєР° HexStr РґРѕР»Р¶РЅР° СЃРѕРѕС‚РІРµС‚СЃС‚РІРѕРІР°С‚СЊ С„РѕСЂРјР°С‚Сѓ Р·Р°РїРёСЃРё РІ С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅРѕРј С„РѕСЂРјР°С‚Рµ, РєР°Рє СѓРєР°Р·Р°РЅРѕ РІ РєРѕРјРјРµРЅС‚Р°СЂРёРё.
+// Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ СЃС‚СЂСѓРєС‚СѓСЂСѓ THexRec, СЃРѕРґРµСЂР¶Р°С‰СѓСЋ СЂР°Р·РѕР±СЂР°РЅРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РёР· СЃС‚СЂРѕРєРё.
 function HexStr2Rec(HexStr: string): THexRec;
 var
   i: integer;
 begin
   Result.Marker := Ord(HexStr[1]);
-  // Проверяем, что первый символ строки является маркером начала записи ':'
+  // РџСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ РїРµСЂРІС‹Р№ СЃРёРјРІРѕР» СЃС‚СЂРѕРєРё СЏРІР»СЏРµС‚СЃСЏ РјР°СЂРєРµСЂРѕРј РЅР°С‡Р°Р»Р° Р·Р°РїРёСЃРё ':'
   if Result.Marker <> Ord(':') then
     raise EHex2Bin.Create(HEX_ERROR_MARKER);
   try
-    // Извлекаем размер данных, адрес и тип записи из строкового представления
+    // РР·РІР»РµРєР°РµРј СЂР°Р·РјРµСЂ РґР°РЅРЅС‹С…, Р°РґСЂРµСЃ Рё С‚РёРї Р·Р°РїРёСЃРё РёР· СЃС‚СЂРѕРєРѕРІРѕРіРѕ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ
     Result.DataSize := StrToInt('$' + Copy(HexStr, 2, 2));
     Result.Addr := StrToInt('$' + Copy(HexStr, 4, 4));
     Result.RecType := TRecType(StrToInt('$' + Copy(HexStr, 8, 2)));
-    // Извлекаем байты данных из строки и заполняем буфер данных в структуре THexRec
+    // РР·РІР»РµРєР°РµРј Р±Р°Р№С‚С‹ РґР°РЅРЅС‹С… РёР· СЃС‚СЂРѕРєРё Рё Р·Р°РїРѕР»РЅСЏРµРј Р±СѓС„РµСЂ РґР°РЅРЅС‹С… РІ СЃС‚СЂСѓРєС‚СѓСЂРµ THexRec
     for i := 0 to Result.DataSize - 1 do
       Result.DataBuf[i] := StrToInt('$' + Copy(HexStr, 10 + i * 2, 2));
-    // Извлекаем контрольную сумму из строки
+    // РР·РІР»РµРєР°РµРј РєРѕРЅС‚СЂРѕР»СЊРЅСѓСЋ СЃСѓРјРјСѓ РёР· СЃС‚СЂРѕРєРё
     Result.CheckSum := StrToInt('$' + Copy(HexStr, 10 + Result.DataSize * 2, 2));
   except
     raise EHex2Bin.Create(HEX_ERROR_DATA);
   end;
-  // Проверяем корректность контрольной суммы
+  // РџСЂРѕРІРµСЂСЏРµРј РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚СЊ РєРѕРЅС‚СЂРѕР»СЊРЅРѕР№ СЃСѓРјРјС‹
   if Result.CheckSum <> HexCalcCheckSum(Result) then
     raise EHex2Bin.Create(HEX_ERROR_CHECK_SUM);
-  // Возвращаем разобранную структуру THexRec
+  // Р’РѕР·РІСЂР°С‰Р°РµРј СЂР°Р·РѕР±СЂР°РЅРЅСѓСЋ СЃС‚СЂСѓРєС‚СѓСЂСѓ THexRec
 end;
 
-// Процедура Bin2Hex выполняет конвертацию данных из формата BIN в формат HEX.
-// Она считывает данные из BinStream и записывает их в HexStringList в виде строк в формате HEX.
-// Параметр StartAddress определяет начальный адрес данных в процессе конвертации.
+// РџСЂРѕС†РµРґСѓСЂР° Bin2Hex РІС‹РїРѕР»РЅСЏРµС‚ РєРѕРЅРІРµСЂС‚Р°С†РёСЋ РґР°РЅРЅС‹С… РёР· С„РѕСЂРјР°С‚Р° BIN РІ С„РѕСЂРјР°С‚ HEX.
+// РћРЅР° СЃС‡РёС‚С‹РІР°РµС‚ РґР°РЅРЅС‹Рµ РёР· BinStream Рё Р·Р°РїРёСЃС‹РІР°РµС‚ РёС… РІ HexStringList РІ РІРёРґРµ СЃС‚СЂРѕРє РІ С„РѕСЂРјР°С‚Рµ HEX.
+// РџР°СЂР°РјРµС‚СЂ StartAddress РѕРїСЂРµРґРµР»СЏРµС‚ РЅР°С‡Р°Р»СЊРЅС‹Р№ Р°РґСЂРµСЃ РґР°РЅРЅС‹С… РІ РїСЂРѕС†РµСЃСЃРµ РєРѕРЅРІРµСЂС‚Р°С†РёРё.
 procedure Bin2Hex(BinStream: TMemoryStream; HexStringList: TStringList;
   StartAddress: int64);
 var
-  HexRec: THexRec;      // Структура, представляющая запись формата Intel Hex
-  BufferSize: DWORD;    // Размер буфера (размер входного потока данных)
-  SectionSize: DWORD;   // Размер текущей секции данных
-  RecordSize: DWORD;    // Размер текущей записи данных
-  SectionAddr: DWORD;   // Адрес начала текущей секции
-  LinearAddr: DWORD;    // Линейный адрес
+  HexRec: THexRec;      // РЎС‚СЂСѓРєС‚СѓСЂР°, РїСЂРµРґСЃС‚Р°РІР»СЏСЋС‰Р°СЏ Р·Р°РїРёСЃСЊ С„РѕСЂРјР°С‚Р° Intel Hex
+  BufferSize: DWORD;    // Р Р°Р·РјРµСЂ Р±СѓС„РµСЂР° (СЂР°Р·РјРµСЂ РІС…РѕРґРЅРѕРіРѕ РїРѕС‚РѕРєР° РґР°РЅРЅС‹С…)
+  SectionSize: DWORD;   // Р Р°Р·РјРµСЂ С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё РґР°РЅРЅС‹С…
+  RecordSize: DWORD;    // Р Р°Р·РјРµСЂ С‚РµРєСѓС‰РµР№ Р·Р°РїРёСЃРё РґР°РЅРЅС‹С…
+  SectionAddr: DWORD;   // РђРґСЂРµСЃ РЅР°С‡Р°Р»Р° С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё
+  LinearAddr: DWORD;    // Р›РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ
 begin
-  SectionAddr := 0;     // Начальный адрес секции (инициализация)
-  LinearAddr := 0;      // Начальный линейный адрес (инициализация)
-  BufferSize := BinStream.Size;     // Получаем размер входного потока данных
-  SectionSize := BufferSize;        // Размер секции данных равен размеру входного потока данных
-  BinStream.Seek(0, soBeginning);   // Устанавливаем указатель в начало входного потока данных
+  SectionAddr := 0;     // РќР°С‡Р°Р»СЊРЅС‹Р№ Р°РґСЂРµСЃ СЃРµРєС†РёРё (РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ)
+  LinearAddr := 0;      // РќР°С‡Р°Р»СЊРЅС‹Р№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ (РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ)
+  BufferSize := BinStream.Size;     // РџРѕР»СѓС‡Р°РµРј СЂР°Р·РјРµСЂ РІС…РѕРґРЅРѕРіРѕ РїРѕС‚РѕРєР° РґР°РЅРЅС‹С…
+  SectionSize := BufferSize;        // Р Р°Р·РјРµСЂ СЃРµРєС†РёРё РґР°РЅРЅС‹С… СЂР°РІРµРЅ СЂР°Р·РјРµСЂСѓ РІС…РѕРґРЅРѕРіРѕ РїРѕС‚РѕРєР° РґР°РЅРЅС‹С…
+  BinStream.Seek(0, soBeginning);   // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ РІ РЅР°С‡Р°Р»Рѕ РІС…РѕРґРЅРѕРіРѕ РїРѕС‚РѕРєР° РґР°РЅРЅС‹С…
   while BufferSize > 0 do
   begin
-    // Запись расширенного линейного адреса (rtEla)
+    // Р—Р°РїРёСЃСЊ СЂР°СЃС€РёСЂРµРЅРЅРѕРіРѕ Р»РёРЅРµР№РЅРѕРіРѕ Р°РґСЂРµСЃР° (rtEla)
     if (StartAddress <> 0) or (SectionSize = 0) then
     begin
-      if (StartAddress <> 0) then    // Если это первая секция
+      if (StartAddress <> 0) then    // Р•СЃР»Рё СЌС‚Рѕ РїРµСЂРІР°СЏ СЃРµРєС†РёСЏ
       begin
-        SectionAddr := StartAddress and (ONE_SECTION_SIZE - 1);   // Вычисляем адрес начала секции
-        SectionSize := ONE_SECTION_SIZE - SectionAddr;            // Вычисляем размер секции
-        LinearAddr := StartAddress shr 16;                        // Вычисляем линейный адрес
-        StartAddress := 0;                                        // Сбрасываем стартовый адрес в 0
+        SectionAddr := StartAddress and (ONE_SECTION_SIZE - 1);   // Р’С‹С‡РёСЃР»СЏРµРј Р°РґСЂРµСЃ РЅР°С‡Р°Р»Р° СЃРµРєС†РёРё
+        SectionSize := ONE_SECTION_SIZE - SectionAddr;            // Р’С‹С‡РёСЃР»СЏРµРј СЂР°Р·РјРµСЂ СЃРµРєС†РёРё
+        LinearAddr := StartAddress shr 16;                        // Р’С‹С‡РёСЃР»СЏРµРј Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ
+        StartAddress := 0;                                        // РЎР±СЂР°СЃС‹РІР°РµРј СЃС‚Р°СЂС‚РѕРІС‹Р№ Р°РґСЂРµСЃ РІ 0
       end
-      else    // Если размер секции равен 0
+      else    // Р•СЃР»Рё СЂР°Р·РјРµСЂ СЃРµРєС†РёРё СЂР°РІРµРЅ 0
       begin
-        SectionAddr := 0;               // Сбрасываем адрес секции в 0
-        SectionSize := BufferSize;      // Размер секции равен размеру оставшихся данных
-        LinearAddr := LinearAddr + 1;   // Увеличиваем линейный адрес на 1
+        SectionAddr := 0;               // РЎР±СЂР°СЃС‹РІР°РµРј Р°РґСЂРµСЃ СЃРµРєС†РёРё РІ 0
+        SectionSize := BufferSize;      // Р Р°Р·РјРµСЂ СЃРµРєС†РёРё СЂР°РІРµРЅ СЂР°Р·РјРµСЂСѓ РѕСЃС‚Р°РІС€РёС…СЃСЏ РґР°РЅРЅС‹С…
+        LinearAddr := LinearAddr + 1;   // РЈРІРµР»РёС‡РёРІР°РµРј Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ РЅР° 1
       end;
-      HexRec.DataSize := 2;                                 // Размер данных записи (2 байта)
-      HexRec.Addr := 0;                                     // Адрес записи (0)
-      HexRec.RecType := rtEla;                              // Тип записи (расширенный линейный адрес)
-      HexRec.DataBuf[0] := LinearAddr shr 8;                 // Байт данных - старший байт линейного адреса
-      HexRec.DataBuf[1] := LinearAddr and $FF;               // Байт данных - младший байт линейного адреса
-      HexStringList.Add(HexRec2Str(HexRec));                 // Преобразуем запись в строку и добавляем в список
+      HexRec.DataSize := 2;                                 // Р Р°Р·РјРµСЂ РґР°РЅРЅС‹С… Р·Р°РїРёСЃРё (2 Р±Р°Р№С‚Р°)
+      HexRec.Addr := 0;                                     // РђРґСЂРµСЃ Р·Р°РїРёСЃРё (0)
+      HexRec.RecType := rtEla;                              // РўРёРї Р·Р°РїРёСЃРё (СЂР°СЃС€РёСЂРµРЅРЅС‹Р№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ)
+      HexRec.DataBuf[0] := LinearAddr shr 8;                 // Р‘Р°Р№С‚ РґР°РЅРЅС‹С… - СЃС‚Р°СЂС€РёР№ Р±Р°Р№С‚ Р»РёРЅРµР№РЅРѕРіРѕ Р°РґСЂРµСЃР°
+      HexRec.DataBuf[1] := LinearAddr and $FF;               // Р‘Р°Р№С‚ РґР°РЅРЅС‹С… - РјР»Р°РґС€РёР№ Р±Р°Р№С‚ Р»РёРЅРµР№РЅРѕРіРѕ Р°РґСЂРµСЃР°
+      HexStringList.Add(HexRec2Str(HexRec));                 // РџСЂРµРѕР±СЂР°Р·СѓРµРј Р·Р°РїРёСЃСЊ РІ СЃС‚СЂРѕРєСѓ Рё РґРѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє
     end
-    else    // Запись данных (rtData)
+    else    // Р—Р°РїРёСЃСЊ РґР°РЅРЅС‹С… (rtData)
     begin
-      RecordSize := SectionSize;                            // Размер записи данных равен размеру текущей секции
-      if RecordSize > ONE_RECORD_SIZE then                  // Если размер записи превышает максимальный размер записи
-        RecordSize := ONE_RECORD_SIZE;                      // Ограничиваем размер записи до максимального
-      HexRec.DataSize := RecordSize;                        // Размер данных записи
-      HexRec.Addr := SectionAddr;                           // Адрес записи (адрес начала секции)
-      HexRec.RecType := rtData;                             // Тип записи (данные)
-      BinStream.Read(HexRec.DataBuf[0], RecordSize);         // Читаем данные из входного потока в буфер данных записи
-      HexStringList.Add(HexRec2Str(HexRec));                 // Преобразуем запись в строку и добавляем в список
-      SectionAddr := SectionAddr + RecordSize;               // Увеличиваем адрес начала секции на размер записи
-      SectionSize := SectionSize - RecordSize;               // Уменьшаем размер текущей секции на размер записи
-      BufferSize := BufferSize - RecordSize;                 // Уменьшаем размер буфера на размер записи
+      RecordSize := SectionSize;                            // Р Р°Р·РјРµСЂ Р·Р°РїРёСЃРё РґР°РЅРЅС‹С… СЂР°РІРµРЅ СЂР°Р·РјРµСЂСѓ С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё
+      if RecordSize > ONE_RECORD_SIZE then                  // Р•СЃР»Рё СЂР°Р·РјРµСЂ Р·Р°РїРёСЃРё РїСЂРµРІС‹С€Р°РµС‚ РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ Р·Р°РїРёСЃРё
+        RecordSize := ONE_RECORD_SIZE;                      // РћРіСЂР°РЅРёС‡РёРІР°РµРј СЂР°Р·РјРµСЂ Р·Р°РїРёСЃРё РґРѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ
+      HexRec.DataSize := RecordSize;                        // Р Р°Р·РјРµСЂ РґР°РЅРЅС‹С… Р·Р°РїРёСЃРё
+      HexRec.Addr := SectionAddr;                           // РђРґСЂРµСЃ Р·Р°РїРёСЃРё (Р°РґСЂРµСЃ РЅР°С‡Р°Р»Р° СЃРµРєС†РёРё)
+      HexRec.RecType := rtData;                             // РўРёРї Р·Р°РїРёСЃРё (РґР°РЅРЅС‹Рµ)
+      BinStream.Read(HexRec.DataBuf[0], RecordSize);         // Р§РёС‚Р°РµРј РґР°РЅРЅС‹Рµ РёР· РІС…РѕРґРЅРѕРіРѕ РїРѕС‚РѕРєР° РІ Р±СѓС„РµСЂ РґР°РЅРЅС‹С… Р·Р°РїРёСЃРё
+      HexStringList.Add(HexRec2Str(HexRec));                 // РџСЂРµРѕР±СЂР°Р·СѓРµРј Р·Р°РїРёСЃСЊ РІ СЃС‚СЂРѕРєСѓ Рё РґРѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє
+      SectionAddr := SectionAddr + RecordSize;               // РЈРІРµР»РёС‡РёРІР°РµРј Р°РґСЂРµСЃ РЅР°С‡Р°Р»Р° СЃРµРєС†РёРё РЅР° СЂР°Р·РјРµСЂ Р·Р°РїРёСЃРё
+      SectionSize := SectionSize - RecordSize;               // РЈРјРµРЅСЊС€Р°РµРј СЂР°Р·РјРµСЂ С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё РЅР° СЂР°Р·РјРµСЂ Р·Р°РїРёСЃРё
+      BufferSize := BufferSize - RecordSize;                 // РЈРјРµРЅСЊС€Р°РµРј СЂР°Р·РјРµСЂ Р±СѓС„РµСЂР° РЅР° СЂР°Р·РјРµСЂ Р·Р°РїРёСЃРё
     end;
   end;
-  // Запись окончания файла (rtEof) :00000001FF
-  HexRec.DataSize := 0;       // Размер данных записи (0)
-  HexRec.Addr := 0;           // Адрес записи (0)
-  HexRec.RecType := rtEof;    // Тип записи (окончание файла)
-  HexStringList.Add(HexRec2Str(HexRec));   // Преобразуем запись в строку и добавляем в список
+  // Р—Р°РїРёСЃСЊ РѕРєРѕРЅС‡Р°РЅРёСЏ С„Р°Р№Р»Р° (rtEof) :00000001FF
+  HexRec.DataSize := 0;       // Р Р°Р·РјРµСЂ РґР°РЅРЅС‹С… Р·Р°РїРёСЃРё (0)
+  HexRec.Addr := 0;           // РђРґСЂРµСЃ Р·Р°РїРёСЃРё (0)
+  HexRec.RecType := rtEof;    // РўРёРї Р·Р°РїРёСЃРё (РѕРєРѕРЅС‡Р°РЅРёРµ С„Р°Р№Р»Р°)
+  HexStringList.Add(HexRec2Str(HexRec));   // РџСЂРµРѕР±СЂР°Р·СѓРµРј Р·Р°РїРёСЃСЊ РІ СЃС‚СЂРѕРєСѓ Рё РґРѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє
 end;
 
-// Процедура Hex2Bin выполняет конвертацию данных из формата HEX в формат BIN.
-// Она считывает данные из HexStringList в виде строк в формате HEX и записывает их в BinStream в виде бинарных данных.
-// Параметр StartAddress определяет начальный адрес данных в процессе конвертации.
+// РџСЂРѕС†РµРґСѓСЂР° Hex2Bin РІС‹РїРѕР»РЅСЏРµС‚ РєРѕРЅРІРµСЂС‚Р°С†РёСЋ РґР°РЅРЅС‹С… РёР· С„РѕСЂРјР°С‚Р° HEX РІ С„РѕСЂРјР°С‚ BIN.
+// РћРЅР° СЃС‡РёС‚С‹РІР°РµС‚ РґР°РЅРЅС‹Рµ РёР· HexStringList РІ РІРёРґРµ СЃС‚СЂРѕРє РІ С„РѕСЂРјР°С‚Рµ HEX Рё Р·Р°РїРёСЃС‹РІР°РµС‚ РёС… РІ BinStream РІ РІРёРґРµ Р±РёРЅР°СЂРЅС‹С… РґР°РЅРЅС‹С….
+// РџР°СЂР°РјРµС‚СЂ StartAddress РѕРїСЂРµРґРµР»СЏРµС‚ РЅР°С‡Р°Р»СЊРЅС‹Р№ Р°РґСЂРµСЃ РґР°РЅРЅС‹С… РІ РїСЂРѕС†РµСЃСЃРµ РєРѕРЅРІРµСЂС‚Р°С†РёРё.
 procedure Hex2Bin(HexStringList: TStringList; BinStream: TMemoryStream;
   var StartAddress: int64);
 var
   i: integer;
   LastAddress: int64;
-  HexRec: THexRec;                 // Структура, представляющая запись формата Intel Hex
-  SectionFreeAddr: DWORD;          // Свободный адрес в секции данных
-  SectionIndex: DWORD;             // Индекс текущей секции
-  SizeToWrite: DWORD;              // Размер данных для записи
-  BufferToWrite: Pointer;          // Буфер данных для записи
-  LinearAddress: DWORD;            // Линейный адрес
-  FirstLinearAddr: DWORD;          // Первый линейный адрес
-  LastLinearAddr: DWORD;           // Последний линейный адрес
-  FirstUsedDataOffset: DWORD;      // Смещение первого использованного блока данных
-  LastUnusedDataOffset: DWORD;     // Смещение последнего неиспользованного блока данных
+  HexRec: THexRec;                 // РЎС‚СЂСѓРєС‚СѓСЂР°, РїСЂРµРґСЃС‚Р°РІР»СЏСЋС‰Р°СЏ Р·Р°РїРёСЃСЊ С„РѕСЂРјР°С‚Р° Intel Hex
+  SectionFreeAddr: DWORD;          // РЎРІРѕР±РѕРґРЅС‹Р№ Р°РґСЂРµСЃ РІ СЃРµРєС†РёРё РґР°РЅРЅС‹С…
+  SectionIndex: DWORD;             // РРЅРґРµРєСЃ С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё
+  SizeToWrite: DWORD;              // Р Р°Р·РјРµСЂ РґР°РЅРЅС‹С… РґР»СЏ Р·Р°РїРёСЃРё
+  BufferToWrite: Pointer;          // Р‘СѓС„РµСЂ РґР°РЅРЅС‹С… РґР»СЏ Р·Р°РїРёСЃРё
+  LinearAddress: DWORD;            // Р›РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ
+  FirstLinearAddr: DWORD;          // РџРµСЂРІС‹Р№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ
+  LastLinearAddr: DWORD;           // РџРѕСЃР»РµРґРЅРёР№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ
+  FirstUsedDataOffset: DWORD;      // РЎРјРµС‰РµРЅРёРµ РїРµСЂРІРѕРіРѕ РёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С…
+  LastUnusedDataOffset: DWORD;     // РЎРјРµС‰РµРЅРёРµ РїРѕСЃР»РµРґРЅРµРіРѕ РЅРµРёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С…
 begin
-  // Инициализация всех секций и буфера данных
+  // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РІСЃРµС… СЃРµРєС†РёР№ Рё Р±СѓС„РµСЂР° РґР°РЅРЅС‹С…
   for i := 0 to MAX_SECTION_COUNT - 1 do
   begin
-    HexSections[i].LinearAddress := $0000;                      // Обнуляем линейный адрес
-    HexSections[i].UnusedOffset := $0000;                       // Обнуляем смещение неиспользованного блока данных
-    HexSections[i].UsedOffset := ONE_SECTION_SIZE;              // Устанавливаем смещение первого использованного блока данных в размер секции
-    FillChar(HexSections[i].DataBuffer[0], ONE_SECTION_SIZE, $FF);   // Заполняем буфер данных еденицами
+    HexSections[i].LinearAddress := $0000;                      // РћР±РЅСѓР»СЏРµРј Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ
+    HexSections[i].UnusedOffset := $0000;                       // РћР±РЅСѓР»СЏРµРј СЃРјРµС‰РµРЅРёРµ РЅРµРёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С…
+    HexSections[i].UsedOffset := ONE_SECTION_SIZE;              // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃРјРµС‰РµРЅРёРµ РїРµСЂРІРѕРіРѕ РёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С… РІ СЂР°Р·РјРµСЂ СЃРµРєС†РёРё
+    FillChar(HexSections[i].DataBuffer[0], ONE_SECTION_SIZE, $FF);   // Р—Р°РїРѕР»РЅСЏРµРј Р±СѓС„РµСЂ РґР°РЅРЅС‹С… РµРґРµРЅРёС†Р°РјРё
   end;
   SectionIndex := 0;
   for i := 0 to HexStringList.Count - 1 do
   begin
-    HexRec := HexStr2Rec(HexStringList[i]);                      // Преобразуем строку в запись формата Intel Hex
+    HexRec := HexStr2Rec(HexStringList[i]);                      // РџСЂРµРѕР±СЂР°Р·СѓРµРј СЃС‚СЂРѕРєСѓ РІ Р·Р°РїРёСЃСЊ С„РѕСЂРјР°С‚Р° Intel Hex
     case HexRec.RecType of
       rtEof:
-        break;                                                   // Если запись является окончанием файла, выходим из цикла
+        break;                                                   // Р•СЃР»Рё Р·Р°РїРёСЃСЊ СЏРІР»СЏРµС‚СЃСЏ РѕРєРѕРЅС‡Р°РЅРёРµРј С„Р°Р№Р»Р°, РІС‹С…РѕРґРёРј РёР· С†РёРєР»Р°
       rtSsa, rtEsa, rtSla:
-        continue;                                                // Пропускаем записи, связанные с адресами
+        continue;                                                // РџСЂРѕРїСѓСЃРєР°РµРј Р·Р°РїРёСЃРё, СЃРІСЏР·Р°РЅРЅС‹Рµ СЃ Р°РґСЂРµСЃР°РјРё
       rtEla:
         begin
-          LinearAddress := HexRec.DataBuf[0] * 256 + HexRec.DataBuf[1];   // Получаем линейный адрес из записи
+          LinearAddress := HexRec.DataBuf[0] * 256 + HexRec.DataBuf[1];   // РџРѕР»СѓС‡Р°РµРј Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ РёР· Р·Р°РїРёСЃРё
           if HexSections[SectionIndex].LinearAddress <> LinearAddress then
           begin
             if (i <> 0) then
-              SectionIndex := SectionIndex + 1;                  // Увеличиваем индекс секции при изменении линейного адреса
+              SectionIndex := SectionIndex + 1;                  // РЈРІРµР»РёС‡РёРІР°РµРј РёРЅРґРµРєСЃ СЃРµРєС†РёРё РїСЂРё РёР·РјРµРЅРµРЅРёРё Р»РёРЅРµР№РЅРѕРіРѕ Р°РґСЂРµСЃР°
             if (SectionIndex = MAX_SECTION_COUNT) then
-              raise EHex2Bin.Create(HEX_ERROR_SECTION_COUNT);     // Если количество секций превышает максимально допустимое, вызываем исключение
+              raise EHex2Bin.Create(HEX_ERROR_SECTION_COUNT);     // Р•СЃР»Рё РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРµРєС†РёР№ РїСЂРµРІС‹С€Р°РµС‚ РјР°РєСЃРёРјР°Р»СЊРЅРѕ РґРѕРїСѓСЃС‚РёРјРѕРµ, РІС‹Р·С‹РІР°РµРј РёСЃРєР»СЋС‡РµРЅРёРµ
 
-            HexSections[SectionIndex].LinearAddress := LinearAddress;   // Записываем линейный адрес в текущую секцию
+            HexSections[SectionIndex].LinearAddress := LinearAddress;   // Р—Р°РїРёСЃС‹РІР°РµРј Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ РІ С‚РµРєСѓС‰СѓСЋ СЃРµРєС†РёСЋ
           end;
         end;
       rtData:
         begin
-          SectionFreeAddr := HexRec.Addr + HexRec.DataSize;     // Вычисляем свободный адрес в текущей секции
+          SectionFreeAddr := HexRec.Addr + HexRec.DataSize;     // Р’С‹С‡РёСЃР»СЏРµРј СЃРІРѕР±РѕРґРЅС‹Р№ Р°РґСЂРµСЃ РІ С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё
           if SectionFreeAddr > ONE_SECTION_SIZE then
-            raise EHex2Bin.Create(HEX_ERROR_SECTION_SIZE);       // Если свободный адрес превышает размер секции, вызываем исключение
+            raise EHex2Bin.Create(HEX_ERROR_SECTION_SIZE);       // Р•СЃР»Рё СЃРІРѕР±РѕРґРЅС‹Р№ Р°РґСЂРµСЃ РїСЂРµРІС‹С€Р°РµС‚ СЂР°Р·РјРµСЂ СЃРµРєС†РёРё, РІС‹Р·С‹РІР°РµРј РёСЃРєР»СЋС‡РµРЅРёРµ
           if HexSections[SectionIndex].UnusedOffset < SectionFreeAddr then
-            HexSections[SectionIndex].UnusedOffset := SectionFreeAddr;   // Обновляем смещение неиспользованного блока данных в текущей секции
+            HexSections[SectionIndex].UnusedOffset := SectionFreeAddr;   // РћР±РЅРѕРІР»СЏРµРј СЃРјРµС‰РµРЅРёРµ РЅРµРёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С… РІ С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё
           if HexSections[SectionIndex].UsedOffset > HexRec.Addr then
-            HexSections[SectionIndex].UsedOffset := HexRec.Addr;     // Обновляем смещение первого использованного блока данных в текущей секции
+            HexSections[SectionIndex].UsedOffset := HexRec.Addr;     // РћР±РЅРѕРІР»СЏРµРј СЃРјРµС‰РµРЅРёРµ РїРµСЂРІРѕРіРѕ РёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С… РІ С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё
           CopyMemory(@HexSections[SectionIndex].DataBuffer[HexRec.Addr],
-            @HexRec.DataBuf[0], HexRec.DataSize);               // Копируем данные из записи в буфер данных секции
+            @HexRec.DataBuf[0], HexRec.DataSize);               // РљРѕРїРёСЂСѓРµРј РґР°РЅРЅС‹Рµ РёР· Р·Р°РїРёСЃРё РІ Р±СѓС„РµСЂ РґР°РЅРЅС‹С… СЃРµРєС†РёРё
         end;
     end;
   end;
 
-  FirstLinearAddr := $10000;         // Инициализируем первый линейный адрес значением $10000
-  LastLinearAddr := 0;               // Инициализируем последний линейный адрес значением 0
-  FirstUsedDataOffset := 0;          // Инициализируем смещение первого использованного блока данных значением 0
-  LastUnusedDataOffset := ONE_SECTION_SIZE;   // Инициализируем смещение последнего неиспользованного блока данных значением размера одной секции
-  // Определение первого и последнего линейных адресов, а также смещений первого использованного и последнего неиспользованного блоков данных
+  FirstLinearAddr := $10000;         // РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РїРµСЂРІС‹Р№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ Р·РЅР°С‡РµРЅРёРµРј $10000
+  LastLinearAddr := 0;               // РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РїРѕСЃР»РµРґРЅРёР№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ Р·РЅР°С‡РµРЅРёРµРј 0
+  FirstUsedDataOffset := 0;          // РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј СЃРјРµС‰РµРЅРёРµ РїРµСЂРІРѕРіРѕ РёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С… Р·РЅР°С‡РµРЅРёРµРј 0
+  LastUnusedDataOffset := ONE_SECTION_SIZE;   // РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј СЃРјРµС‰РµРЅРёРµ РїРѕСЃР»РµРґРЅРµРіРѕ РЅРµРёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С… Р·РЅР°С‡РµРЅРёРµРј СЂР°Р·РјРµСЂР° РѕРґРЅРѕР№ СЃРµРєС†РёРё
+  // РћРїСЂРµРґРµР»РµРЅРёРµ РїРµСЂРІРѕРіРѕ Рё РїРѕСЃР»РµРґРЅРµРіРѕ Р»РёРЅРµР№РЅС‹С… Р°РґСЂРµСЃРѕРІ, Р° С‚Р°РєР¶Рµ СЃРјРµС‰РµРЅРёР№ РїРµСЂРІРѕРіРѕ РёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Рё РїРѕСЃР»РµРґРЅРµРіРѕ РЅРµРёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєРѕРІ РґР°РЅРЅС‹С…
   for i := 0 to SectionIndex do
   begin
-    // Проверяем текущий линейный адрес с последним известным линейным адресом
+    // РџСЂРѕРІРµСЂСЏРµРј С‚РµРєСѓС‰РёР№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ СЃ РїРѕСЃР»РµРґРЅРёРј РёР·РІРµСЃС‚РЅС‹Рј Р»РёРЅРµР№РЅС‹Рј Р°РґСЂРµСЃРѕРј
     if HexSections[i].LinearAddress > LastLinearAddr then
     begin
-      LastLinearAddr := HexSections[i].LinearAddress;        // Обновляем последний линейный адрес
-      LastUnusedDataOffset := HexSections[i].UnusedOffset;   // Обновляем смещение последнего неиспользованного блока данных
+      LastLinearAddr := HexSections[i].LinearAddress;        // РћР±РЅРѕРІР»СЏРµРј РїРѕСЃР»РµРґРЅРёР№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ
+      LastUnusedDataOffset := HexSections[i].UnusedOffset;   // РћР±РЅРѕРІР»СЏРµРј СЃРјРµС‰РµРЅРёРµ РїРѕСЃР»РµРґРЅРµРіРѕ РЅРµРёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С…
     end;
 
-    // Проверяем текущий линейный адрес с первым известным линейным адресом
+    // РџСЂРѕРІРµСЂСЏРµРј С‚РµРєСѓС‰РёР№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ СЃ РїРµСЂРІС‹Рј РёР·РІРµСЃС‚РЅС‹Рј Р»РёРЅРµР№РЅС‹Рј Р°РґСЂРµСЃРѕРј
     if HexSections[i].LinearAddress < FirstLinearAddr then
     begin
-      FirstLinearAddr := HexSections[i].LinearAddress;       // Обновляем первый линейный адрес
-      FirstUsedDataOffset := HexSections[i].UsedOffset;      // Обновляем смещение первого использованного блока данных
+      FirstLinearAddr := HexSections[i].LinearAddress;       // РћР±РЅРѕРІР»СЏРµРј РїРµСЂРІС‹Р№ Р»РёРЅРµР№РЅС‹Р№ Р°РґСЂРµСЃ
+      FirstUsedDataOffset := HexSections[i].UsedOffset;      // РћР±РЅРѕРІР»СЏРµРј СЃРјРµС‰РµРЅРёРµ РїРµСЂРІРѕРіРѕ РёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С…
     end;
   end;
   StartAddress := DWORD(FirstLinearAddr) shl 16;
-  StartAddress := StartAddress + FirstUsedDataOffset;         // Установка стартового адреса
+  StartAddress := StartAddress + FirstUsedDataOffset;         // РЈСЃС‚Р°РЅРѕРІРєР° СЃС‚Р°СЂС‚РѕРІРѕРіРѕ Р°РґСЂРµСЃР°
   LastAddress := DWORD(LastLinearAddr) shl 16;
-  LastAddress := LastAddress + LastUnusedDataOffset;          // Вычисление последнего адреса
+  LastAddress := LastAddress + LastUnusedDataOffset;          // Р’С‹С‡РёСЃР»РµРЅРёРµ РїРѕСЃР»РµРґРЅРµРіРѕ Р°РґСЂРµСЃР°
   BinStream.Clear;
-  BinStream.SetSize(LastAddress - StartAddress);              // Установка размера выходного потока
-  // Запись каждой секции в выходной поток (включая неиспользованные секции)
+  BinStream.SetSize(LastAddress - StartAddress);              // РЈСЃС‚Р°РЅРѕРІРєР° СЂР°Р·РјРµСЂР° РІС‹С…РѕРґРЅРѕРіРѕ РїРѕС‚РѕРєР°
+  // Р—Р°РїРёСЃСЊ РєР°Р¶РґРѕР№ СЃРµРєС†РёРё РІ РІС‹С…РѕРґРЅРѕР№ РїРѕС‚РѕРє (РІРєР»СЋС‡Р°СЏ РЅРµРёСЃРїРѕР»СЊР·РѕРІР°РЅРЅС‹Рµ СЃРµРєС†РёРё)
   for i := 0 to SectionIndex do
   begin
     if HexSections[i].LinearAddress = FirstLinearAddr then
@@ -349,113 +349,113 @@ begin
         SizeToWrite := BinStream.Size;
 
       BufferToWrite := @HexSections[i].DataBuffer
-        [HexSections[i].UsedOffset];                          // Определение буфера данных для записи для первой использованной секции
+        [HexSections[i].UsedOffset];                          // РћРїСЂРµРґРµР»РµРЅРёРµ Р±СѓС„РµСЂР° РґР°РЅРЅС‹С… РґР»СЏ Р·Р°РїРёСЃРё РґР»СЏ РїРµСЂРІРѕР№ РёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕР№ СЃРµРєС†РёРё
     end
     else if HexSections[i].LinearAddress = LastLinearAddr then
     begin
       SizeToWrite := HexSections[i].UnusedOffset;
-      BufferToWrite := @HexSections[i].DataBuffer[0];          // Определение буфера данных для записи для последней неиспользованной секции
+      BufferToWrite := @HexSections[i].DataBuffer[0];          // РћРїСЂРµРґРµР»РµРЅРёРµ Р±СѓС„РµСЂР° РґР°РЅРЅС‹С… РґР»СЏ Р·Р°РїРёСЃРё РґР»СЏ РїРѕСЃР»РµРґРЅРµР№ РЅРµРёСЃРїРѕР»СЊР·РѕРІР°РЅРЅРѕР№ СЃРµРєС†РёРё
     end
     else
     begin
       SizeToWrite := ONE_SECTION_SIZE;
-      BufferToWrite := @HexSections[i].DataBuffer[0];          // Определение буфера данных для записи для остальных секций
+      BufferToWrite := @HexSections[i].DataBuffer[0];          // РћРїСЂРµРґРµР»РµРЅРёРµ Р±СѓС„РµСЂР° РґР°РЅРЅС‹С… РґР»СЏ Р·Р°РїРёСЃРё РґР»СЏ РѕСЃС‚Р°Р»СЊРЅС‹С… СЃРµРєС†РёР№
     end;
-    BinStream.Write(BufferToWrite^, SizeToWrite);              // Запись данных в выходной поток
+    BinStream.Write(BufferToWrite^, SizeToWrite);              // Р—Р°РїРёСЃСЊ РґР°РЅРЅС‹С… РІ РІС‹С…РѕРґРЅРѕР№ РїРѕС‚РѕРє
   end;
 
 end;
 
-// Функция HexStr2Int преобразует первые два символа строки HexStr в число в шестнадцатеричном формате.
-// Если преобразование успешно, результат возвращается через переменную AByte, и функция возвращает TRUE.
-// В противном случае, если строка не содержит корректное представление шестнадцатеричного числа, функция возвращает FALSE.
+// Р¤СѓРЅРєС†РёСЏ HexStr2Int РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РїРµСЂРІС‹Рµ РґРІР° СЃРёРјРІРѕР»Р° СЃС‚СЂРѕРєРё HexStr РІ С‡РёСЃР»Рѕ РІ С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅРѕРј С„РѕСЂРјР°С‚Рµ.
+// Р•СЃР»Рё РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СѓСЃРїРµС€РЅРѕ, СЂРµР·СѓР»СЊС‚Р°С‚ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ С‡РµСЂРµР· РїРµСЂРµРјРµРЅРЅСѓСЋ AByte, Рё С„СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ TRUE.
+// Р’ РїСЂРѕС‚РёРІРЅРѕРј СЃР»СѓС‡Р°Рµ, РµСЃР»Рё СЃС‚СЂРѕРєР° РЅРµ СЃРѕРґРµСЂР¶РёС‚ РєРѕСЂСЂРµРєС‚РЅРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅРѕРіРѕ С‡РёСЃР»Р°, С„СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ FALSE.
 function HexStr2Int(HexStr: PChar; var AByte: BYTE): boolean;
 begin
   Result := FALSE;
-  // Проверяем, начинается ли строка с символа '0'
-  // Если да, то проверяем следующий символ, чтобы убедиться, что это не префикс '0x' или '0X'
+  // РџСЂРѕРІРµСЂСЏРµРј, РЅР°С‡РёРЅР°РµС‚СЃСЏ Р»Рё СЃС‚СЂРѕРєР° СЃ СЃРёРјРІРѕР»Р° '0'
+  // Р•СЃР»Рё РґР°, С‚Рѕ РїСЂРѕРІРµСЂСЏРµРј СЃР»РµРґСѓСЋС‰РёР№ СЃРёРјРІРѕР», С‡С‚РѕР±С‹ СѓР±РµРґРёС‚СЊСЃСЏ, С‡С‚Рѕ СЌС‚Рѕ РЅРµ РїСЂРµС„РёРєСЃ '0x' РёР»Рё '0X'
   if (HexStr[0] = '0') then
   begin
     if ((HexStr[1] = 'x') or (HexStr[1] = 'X')) then
       Exit;
   end;
-  // Проверяем, является ли первый символ строки допустимым символом шестнадцатеричной цифры
+  // РџСЂРѕРІРµСЂСЏРµРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РїРµСЂРІС‹Р№ СЃРёРјРІРѕР» СЃС‚СЂРѕРєРё РґРѕРїСѓСЃС‚РёРјС‹Рј СЃРёРјРІРѕР»РѕРј С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅРѕР№ С†РёС„СЂС‹
   if CharInSet(HexStr[0], ['0'..'9', 'A'..'F', 'a'..'f']) then
   begin
-    // Проверяем, является ли второй символ строки допустимым символом шестнадцатеричной цифры
+    // РџСЂРѕРІРµСЂСЏРµРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РІС‚РѕСЂРѕР№ СЃРёРјРІРѕР» СЃС‚СЂРѕРєРё РґРѕРїСѓСЃС‚РёРјС‹Рј СЃРёРјРІРѕР»РѕРј С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅРѕР№ С†РёС„СЂС‹
     if CharInSet(HexStr[1], ['0'..'9', 'A'..'F', 'a'..'f']) then
     begin
-      // Если оба символа являются допустимыми символами шестнадцатеричной цифры,
-      // то преобразуем их в число в шестнадцатеричном формате с помощью функции StrToInt
+      // Р•СЃР»Рё РѕР±Р° СЃРёРјРІРѕР»Р° СЏРІР»СЏСЋС‚СЃСЏ РґРѕРїСѓСЃС‚РёРјС‹РјРё СЃРёРјРІРѕР»Р°РјРё С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅРѕР№ С†РёС„СЂС‹,
+      // С‚Рѕ РїСЂРµРѕР±СЂР°Р·СѓРµРј РёС… РІ С‡РёСЃР»Рѕ РІ С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅРѕРј С„РѕСЂРјР°С‚Рµ СЃ РїРѕРјРѕС‰СЊСЋ С„СѓРЅРєС†РёРё StrToInt
       AByte := StrToInt('$' + HexStr[0] + HexStr[1]);
-      // Устанавливаем результат в TRUE, чтобы указать успешное преобразование
+      // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂРµР·СѓР»СЊС‚Р°С‚ РІ TRUE, С‡С‚РѕР±С‹ СѓРєР°Р·Р°С‚СЊ СѓСЃРїРµС€РЅРѕРµ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ
       Result := TRUE;
     end;
   end;
 end;
 
 
-// Процедура Txt2Bin выполняет конвертацию данных из формата TXT в формат BIN.
-// Она считывает данные из TxtStringList в виде строк и записывает их в BinStream в виде бинарных данных.
-// Параметр StartAddress определяет начальный адрес данных в процессе конвертации.
+// РџСЂРѕС†РµРґСѓСЂР° Txt2Bin РІС‹РїРѕР»РЅСЏРµС‚ РєРѕРЅРІРµСЂС‚Р°С†РёСЋ РґР°РЅРЅС‹С… РёР· С„РѕСЂРјР°С‚Р° TXT РІ С„РѕСЂРјР°С‚ BIN.
+// РћРЅР° СЃС‡РёС‚С‹РІР°РµС‚ РґР°РЅРЅС‹Рµ РёР· TxtStringList РІ РІРёРґРµ СЃС‚СЂРѕРє Рё Р·Р°РїРёСЃС‹РІР°РµС‚ РёС… РІ BinStream РІ РІРёРґРµ Р±РёРЅР°СЂРЅС‹С… РґР°РЅРЅС‹С….
+// РџР°СЂР°РјРµС‚СЂ StartAddress РѕРїСЂРµРґРµР»СЏРµС‚ РЅР°С‡Р°Р»СЊРЅС‹Р№ Р°РґСЂРµСЃ РґР°РЅРЅС‹С… РІ РїСЂРѕС†РµСЃСЃРµ РєРѕРЅРІРµСЂС‚Р°С†РёРё.
 procedure Txt2Bin(TxtStringList: TStringList; BinStream: TMemoryStream;
-  var StartAddress: int64); // Не используется StartAddress
+  var StartAddress: int64); // РќРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ StartAddress
 var
-  CharIndex: DWORD;        // Индекс текущего символа в строке
-  SectionIndex: DWORD;     // Индекс текущей секции данных
-  SectionOffset: DWORD;    // Смещение внутри текущей секции данных
-  TextStr: string;         // Строка, содержащая объединенные текстовые данные
-  BinSize: DWORD;          // Размер бинарных данных
-  AByte: BYTE;             // Байт, полученный из преобразования двух символов
-  SizeToWrite: DWORD;      // Размер данных для записи
+  CharIndex: DWORD;        // РРЅРґРµРєСЃ С‚РµРєСѓС‰РµРіРѕ СЃРёРјРІРѕР»Р° РІ СЃС‚СЂРѕРєРµ
+  SectionIndex: DWORD;     // РРЅРґРµРєСЃ С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё РґР°РЅРЅС‹С…
+  SectionOffset: DWORD;    // РЎРјРµС‰РµРЅРёРµ РІРЅСѓС‚СЂРё С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё РґР°РЅРЅС‹С…
+  TextStr: string;         // РЎС‚СЂРѕРєР°, СЃРѕРґРµСЂР¶Р°С‰Р°СЏ РѕР±СЉРµРґРёРЅРµРЅРЅС‹Рµ С‚РµРєСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ
+  BinSize: DWORD;          // Р Р°Р·РјРµСЂ Р±РёРЅР°СЂРЅС‹С… РґР°РЅРЅС‹С…
+  AByte: BYTE;             // Р‘Р°Р№С‚, РїРѕР»СѓС‡РµРЅРЅС‹Р№ РёР· РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РґРІСѓС… СЃРёРјРІРѕР»РѕРІ
+  SizeToWrite: DWORD;      // Р Р°Р·РјРµСЂ РґР°РЅРЅС‹С… РґР»СЏ Р·Р°РїРёСЃРё
 begin
   TextStr := '';
   for SectionOffset := 0 to TxtStringList.Count - 1 do
-    TextStr := TextStr + TxtStringList[SectionOffset];   // Считываем текстовые данные из списка строк и объединяем их в одну строку
+    TextStr := TextStr + TxtStringList[SectionOffset];   // РЎС‡РёС‚С‹РІР°РµРј С‚РµРєСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ РёР· СЃРїРёСЃРєР° СЃС‚СЂРѕРє Рё РѕР±СЉРµРґРёРЅСЏРµРј РёС… РІ РѕРґРЅСѓ СЃС‚СЂРѕРєСѓ
   SectionIndex := 0;
   SectionOffset := 0;
   CharIndex := 1;
   BinSize := 0;
-  while CharIndex < Length(TextStr) do    // Обрабатываем каждый символ в строке
+  while CharIndex < Length(TextStr) do    // РћР±СЂР°Р±Р°С‚С‹РІР°РµРј РєР°Р¶РґС‹Р№ СЃРёРјРІРѕР» РІ СЃС‚СЂРѕРєРµ
   begin
-    if not HexStr2Int(@TextStr[CharIndex], AByte) then   // Преобразуем два символа в байт, если возможно
+    if not HexStr2Int(@TextStr[CharIndex], AByte) then   // РџСЂРµРѕР±СЂР°Р·СѓРµРј РґРІР° СЃРёРјРІРѕР»Р° РІ Р±Р°Р№С‚, РµСЃР»Рё РІРѕР·РјРѕР¶РЅРѕ
     begin
-      Inc(CharIndex, 1);    // Если преобразование не удалось, переходим к следующему символу
+      Inc(CharIndex, 1);    // Р•СЃР»Рё РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РЅРµ СѓРґР°Р»РѕСЃСЊ, РїРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµРјСѓ СЃРёРјРІРѕР»Сѓ
       continue;
     end;
-    HexSections[SectionIndex].DataBuffer[SectionOffset] := AByte;   // Записываем байт в буфер данных текущей секции
-    Inc(BinSize, 1);   // Увеличиваем размер бинарных данных
-    Inc(SectionOffset, 1);   // Увеличиваем смещение внутри текущей секции
-    if SectionOffset = ONE_SECTION_SIZE then   // Если достигнут размер секции
-      Inc(SectionIndex, 1);   // Переходим к следующей секции
-    if SectionIndex = MAX_SECTION_COUNT then   // Если достигнуто максимальное количество секций
-      break;   // Прекращаем цикл
+    HexSections[SectionIndex].DataBuffer[SectionOffset] := AByte;   // Р—Р°РїРёСЃС‹РІР°РµРј Р±Р°Р№С‚ РІ Р±СѓС„РµСЂ РґР°РЅРЅС‹С… С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё
+    Inc(BinSize, 1);   // РЈРІРµР»РёС‡РёРІР°РµРј СЂР°Р·РјРµСЂ Р±РёРЅР°СЂРЅС‹С… РґР°РЅРЅС‹С…
+    Inc(SectionOffset, 1);   // РЈРІРµР»РёС‡РёРІР°РµРј СЃРјРµС‰РµРЅРёРµ РІРЅСѓС‚СЂРё С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё
+    if SectionOffset = ONE_SECTION_SIZE then   // Р•СЃР»Рё РґРѕСЃС‚РёРіРЅСѓС‚ СЂР°Р·РјРµСЂ СЃРµРєС†РёРё
+      Inc(SectionIndex, 1);   // РџРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµР№ СЃРµРєС†РёРё
+    if SectionIndex = MAX_SECTION_COUNT then   // Р•СЃР»Рё РґРѕСЃС‚РёРіРЅСѓС‚Рѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРµРєС†РёР№
+      break;   // РџСЂРµРєСЂР°С‰Р°РµРј С†РёРєР»
 
-    Inc(CharIndex, 2);   // Переходим к следующей паре символов
+    Inc(CharIndex, 2);   // РџРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµР№ РїР°СЂРµ СЃРёРјРІРѕР»РѕРІ
   end;
-  BinStream.SetSize(BinSize);   // Устанавливаем размер выходного потока
-  // Записываем бинарные данные из буферов секций в выходной поток
+  BinStream.SetSize(BinSize);   // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂР°Р·РјРµСЂ РІС‹С…РѕРґРЅРѕРіРѕ РїРѕС‚РѕРєР°
+  // Р—Р°РїРёСЃС‹РІР°РµРј Р±РёРЅР°СЂРЅС‹Рµ РґР°РЅРЅС‹Рµ РёР· Р±СѓС„РµСЂРѕРІ СЃРµРєС†РёР№ РІ РІС‹С…РѕРґРЅРѕР№ РїРѕС‚РѕРє
   while BinSize > 0 do
   begin
     SizeToWrite := BinSize;
     if SizeToWrite > ONE_SECTION_SIZE then
       SizeToWrite := ONE_SECTION_SIZE;
-    BinStream.Write(HexSections[SectionIndex].DataBuffer[0], SizeToWrite);   // Записываем данные текущей секции
+    BinStream.Write(HexSections[SectionIndex].DataBuffer[0], SizeToWrite);   // Р—Р°РїРёСЃС‹РІР°РµРј РґР°РЅРЅС‹Рµ С‚РµРєСѓС‰РµР№ СЃРµРєС†РёРё
     Inc(SectionIndex);
-    BinSize := BinSize - SizeToWrite;   // Уменьшаем оставшийся размер данных
+    BinSize := BinSize - SizeToWrite;   // РЈРјРµРЅСЊС€Р°РµРј РѕСЃС‚Р°РІС€РёР№СЃСЏ СЂР°Р·РјРµСЂ РґР°РЅРЅС‹С…
   end;
 end;
 
 initialization
 
-// Hex2BinErrorMessage - массив, содержащий сообщения об ошибках, связанных с процессом конвертации HEX в BIN.
-// Каждый элемент массива соответствует определенному коду ошибки.
-Hex2BinErrorMessage[HEX_ERROR_MARKER] := 'Error Marker'; // Ошибка: неверный маркер
-Hex2BinErrorMessage[HEX_ERROR_ADDRESS] := 'Error Address'; // Ошибка: неверный адрес
-Hex2BinErrorMessage[HEX_ERROR_REC_TYPE] := 'Error Type'; // Ошибка: неверный тип записи
-Hex2BinErrorMessage[HEX_ERROR_SECTION_SIZE] := 'Error Section Size'; // Ошибка: неверный размер секции
-Hex2BinErrorMessage[HEX_ERROR_DATA] := 'Error Data'; // Ошибка: неверные данные
-Hex2BinErrorMessage[HEX_ERROR_CHECK_SUM] := 'Error CheckSum'; // Ошибка: неверная контрольная сумма
-Hex2BinErrorMessage[HEX_ERROR_SECTION_COUNT] := 'Error Section Count'; // Ошибка: неверное количество секций
+// Hex2BinErrorMessage - РјР°СЃСЃРёРІ, СЃРѕРґРµСЂР¶Р°С‰РёР№ СЃРѕРѕР±С‰РµРЅРёСЏ РѕР± РѕС€РёР±РєР°С…, СЃРІСЏР·Р°РЅРЅС‹С… СЃ РїСЂРѕС†РµСЃСЃРѕРј РєРѕРЅРІРµСЂС‚Р°С†РёРё HEX РІ BIN.
+// РљР°Р¶РґС‹Р№ СЌР»РµРјРµРЅС‚ РјР°СЃСЃРёРІР° СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РѕРїСЂРµРґРµР»РµРЅРЅРѕРјСѓ РєРѕРґСѓ РѕС€РёР±РєРё.
+Hex2BinErrorMessage[HEX_ERROR_MARKER] := 'Error Marker'; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅС‹Р№ РјР°СЂРєРµСЂ
+Hex2BinErrorMessage[HEX_ERROR_ADDRESS] := 'Error Address'; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅС‹Р№ Р°РґСЂРµСЃ
+Hex2BinErrorMessage[HEX_ERROR_REC_TYPE] := 'Error Type'; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅС‹Р№ С‚РёРї Р·Р°РїРёСЃРё
+Hex2BinErrorMessage[HEX_ERROR_SECTION_SIZE] := 'Error Section Size'; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅС‹Р№ СЂР°Р·РјРµСЂ СЃРµРєС†РёРё
+Hex2BinErrorMessage[HEX_ERROR_DATA] := 'Error Data'; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅС‹Рµ РґР°РЅРЅС‹Рµ
+Hex2BinErrorMessage[HEX_ERROR_CHECK_SUM] := 'Error CheckSum'; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅР°СЏ РєРѕРЅС‚СЂРѕР»СЊРЅР°СЏ СЃСѓРјРјР°
+Hex2BinErrorMessage[HEX_ERROR_SECTION_COUNT] := 'Error Section Count'; // РћС€РёР±РєР°: РЅРµРІРµСЂРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРµРєС†РёР№
 
 end.
