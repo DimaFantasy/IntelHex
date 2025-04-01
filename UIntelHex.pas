@@ -1,4 +1,6 @@
 unit uIntelHex;
+// Intel HEX to BIN converter
+// Copyright (c) 2004-2023
 
 interface
 
