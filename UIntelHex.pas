@@ -131,8 +131,6 @@ begin
 end;
 {$ENDIF}
 
-// FIX: накапливаем в DWORD — нет EIntOverflow при $OVERFLOWCHECKS ON
-// FIX: Ord() вместо BYTE() для RecType
 function HexCalcCheckSum(const HexRec: THexRec): BYTE;
 var
   i:   Integer;
@@ -263,9 +261,6 @@ end;
 
   Проход 1: определяем диапазон адресов, проверяем CS всех строк.
   Проход 2: Seek(absAddr - StartAddr) + Write для каждой rtData.
-
-  FIX: rtEsa (тип 02) теперь бросает HEX_ERROR_REC_TYPE вместо
-  молчаливого игнорирования — иначе адреса будут рассчитаны неверно.
   ============================================================ }
 procedure Hex2Bin(HexStringList: TStringList; BinStream: TMemoryStream;
   var StartAddress: Int64);
@@ -291,7 +286,6 @@ begin
       rtEof:
         Break;
       rtEsa:
-        // FIX: не игнорируем молча — адреса будут неверными
         raise EHex2Bin.Create(HEX_ERROR_REC_TYPE);
       rtSsa, rtSla:
         Continue;
@@ -374,11 +368,6 @@ end;
 
 { ============================================================
   Txt2Bin
-  FIX: конечный автомат вместо конкатенации строк — O(N) вместо O(N²).
-  Читаем символы напрямую из каждой строки TStringList,
-  никакой промежуточной строки TextStr не создаём.
-  Логика пропуска: 0x/0X-префиксы пропускаются, одиночные
-  hex-символы пропускаются — поведение идентично оригиналу.
   ============================================================ }
 procedure Txt2Bin(TxtStringList: TStringList; BinStream: TMemoryStream;
   var StartAddress: Int64);
